@@ -64,9 +64,20 @@
     .question-meta { margin-block: 20px 10px; font-weight: 750; color: var(--accent); }
     #question-heading { font-size: clamp(2rem, 6vw, 3.65rem); }
     .search-panel {
-      margin-top: 24px; padding: clamp(16px, 4vw, 26px); border: 1px solid var(--line);
+      margin-top: 12px; padding: clamp(16px, 4vw, 26px); border: 1px solid var(--line);
       border-radius: 16px; background: var(--panel);
     }
+    .view-switch { display: flex; gap: 8px; margin-top: 24px; }
+    .view-switch button {
+      min-height: 44px; padding: 8px 18px; border-radius: 9px;
+      border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+      font: inherit; font-weight: 750; cursor: pointer;
+    }
+    .view-switch button[aria-pressed="true"] {
+      background: var(--accent); border-color: var(--accent); color: var(--background);
+    }
+    .list-heading { font-size: 1.1rem; }
+    .missing .answer, .missing .points { color: var(--muted); font-weight: 500; }
     label { display: block; margin-bottom: 9px; font-weight: 750; }
     input {
       width: 100%; min-height: 50px; border: 1px solid #666c61; border-radius: 9px;
@@ -121,15 +132,25 @@
       <a class="back" href="#">← Alle spørgsmål</a>
       <p class="question-meta" id="question-meta"></p>
       <h1 id="question-heading" tabindex="-1"></h1>
+      <div class="view-switch" role="group" aria-label="Vælg visning">
+        <button type="button" id="show-search" aria-pressed="true" aria-controls="search-view">Søg</button>
+        <button type="button" id="show-list" aria-pressed="false" aria-controls="list-view">Liste</button>
+      </div>
       <div class="search-panel">
-        <div id="search-controls">
-          <label for="search">Søg i top 100</label>
-          <input id="search" type="search" autocomplete="off" spellcheck="false"
-            enterkeyhint="search" placeholder="Skriv spillernes gæt" aria-controls="results">
-          <p class="status" id="search-status" role="status"></p>
-          <ul class="results" id="results" aria-label="Matchende svar" hidden></ul>
+        <div id="search-view">
+          <div id="search-controls">
+            <label for="search">Søg i top 100</label>
+            <input id="search" type="search" autocomplete="off" spellcheck="false"
+              enterkeyhint="search" placeholder="Skriv spillernes gæt" aria-controls="results">
+            <p class="status" id="search-status" role="status"></p>
+            <ul class="results" id="results" aria-label="Matchende svar" hidden></ul>
+          </div>
+          <p class="status" id="empty-question" hidden>Spørgsmålet og svarlisten tilføjes senere.</p>
         </div>
-        <p class="status" id="empty-question" hidden>Spørgsmålet og svarlisten tilføjes senere.</p>
+        <section id="list-view" aria-labelledby="list-heading" hidden>
+          <h2 class="list-heading" id="list-heading">Top 100</h2>
+          <ol class="results" id="rankings" role="list" aria-labelledby="list-heading"></ol>
+        </section>
       </div>
       <nav class="round-nav" aria-label="Skift spørgsmål">
         <a id="previous">← Forrige</a>
@@ -218,6 +239,9 @@
     const input = byId("search");
     const status = byId("search-status");
     const results = byId("results");
+    const rankings = byId("rankings");
+    const showSearch = byId("show-search");
+    const showList = byId("show-list");
     const labels = ["Præcist match", "Delvist match", "Delvist match", "Lignende svar"];
     let activeQuestion;
 
@@ -226,6 +250,31 @@
       node.className = className;
       node.textContent = content;
       return node;
+    }
+
+    function answerRow(rank, name, matchLabel) {
+      const item = document.createElement("li");
+      item.className = name ? "result" : "result missing";
+      const description = element("div", "answer", name || "Afventer svar");
+      if (matchLabel) description.append(element("span", "match-type", matchLabel));
+      item.append(element("span", "rank", "#" + rank), description);
+      if (name) item.append(element("span", "points", rank + " point"));
+      return item;
+    }
+
+    function setView(showRankings) {
+      byId("search-view").hidden = showRankings;
+      byId("list-view").hidden = !showRankings;
+      showSearch.setAttribute("aria-pressed", String(!showRankings));
+      showList.setAttribute("aria-pressed", String(showRankings));
+      if (!showRankings) return;
+
+      const answersByRank = new Map(activeQuestion.answers.map(({ rank, name }) => [rank, name]));
+      const rows = Array.from({ length: 100 }, (_, index) => {
+        const rank = index + 1;
+        return answerRow(rank, answersByRank.get(rank));
+      });
+      rankings.replaceChildren(...rows);
     }
 
     function renderSearch() {
@@ -246,12 +295,7 @@
         : matches.length === 1 ? "1 match i svarlisten." : `${matches.length} match i svarlisten.`;
       results.hidden = matches.length === 0;
       for (const match of matches) {
-        const item = element("li", "result", "");
-        const description = element("div", "answer", match.name);
-        description.append(element("span", "match-type", labels[match.score]));
-        item.append(element("span", "rank", "#" + match.rank), description,
-          element("span", "points", match.rank + " point"));
-        results.append(item);
+        results.append(answerRow(match.rank, match.name, labels[match.score]));
       }
     }
 
@@ -276,6 +320,7 @@
       byId("empty-question").hidden = hasAnswers;
       input.value = "";
       renderSearch();
+      setView(false);
       byId("previous").hidden = number === 1;
       byId("previous").href = `#sporgsmal-${number - 1}`;
       byId("next").hidden = number === roundCount;
@@ -300,6 +345,8 @@
     });
 
     input.addEventListener("input", renderSearch);
+    showSearch.addEventListener("click", () => setView(false));
+    showList.addEventListener("click", () => setView(true));
     window.addEventListener("hashchange", () => {
       renderRoute(true);
       window.scrollTo(0, 0);
