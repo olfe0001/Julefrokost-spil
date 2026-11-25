@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#191b18">
+  <title>Gæt Top 100 · Vært</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #191b18;
+      --panel: #232622;
+      --ink: #f7f7ef;
+      --muted: #b7bcb0;
+      --line: #3c4138;
+      --accent: #dbf97c;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: var(--background);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+    [hidden] { display: none !important; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .wrap { max-width: 850px; margin-inline: auto; padding-inline: 24px; }
+    header { border-bottom: 1px solid var(--line); }
+    header .wrap {
+      min-height: 68px; display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; }
+    .mark {
+      width: 32px; height: 32px; display: grid; place-items: center; border-radius: 8px;
+      background: var(--accent); color: var(--background); font-size: 19px;
+    }
+    .role { color: var(--muted); font-size: .875rem; }
+    main { padding-block: 42px 56px; }
+    h1, h2, p { margin: 0; }
+    h1 {
+      font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1.03;
+      letter-spacing: -.065em; overflow-wrap: anywhere;
+    }
+    .intro p { color: var(--muted); margin-top: 15px; max-width: 48ch; line-height: 1.6; }
+    .overview-heading { margin-block: 36px 14px; font-size: 1.15rem; }
+    .questions, .results { list-style: none; padding: 0; margin: 0; }
+    .questions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .question {
+      min-height: 70px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center; gap: 13px; padding: 12px; border: 1px solid var(--line);
+      border-radius: 12px; background: var(--panel);
+    }
+    .question:hover, .question:focus-visible { border-color: var(--accent); }
+    .question-number, .rank {
+      width: 40px; min-height: 38px; border-radius: 8px; display: grid; place-items: center;
+      background: #30352c; color: var(--accent); font-weight: 750; font-variant-numeric: tabular-nums;
+    }
+    .question-title { display: block; font-weight: 700; overflow-wrap: anywhere; }
+    .question-status, .match-type {
+      display: block; margin-top: 3px; font-size: .82rem; color: var(--muted);
+    }
+    .arrow { font-size: 1.2rem; color: var(--muted); }
+    .back { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); }
+    .question-meta { margin-block: 20px 10px; font-weight: 750; color: var(--accent); }
+    #question-heading { font-size: clamp(2rem, 6vw, 3.65rem); }
+    .search-panel {
+      margin-top: 24px; padding: clamp(16px, 4vw, 26px); border: 1px solid var(--line);
+      border-radius: 16px; background: var(--panel);
+    }
+    label { display: block; margin-bottom: 9px; font-weight: 750; }
+    input {
+      width: 100%; min-height: 50px; border: 1px solid #666c61; border-radius: 9px;
+      padding: 10px 12px; background: var(--background); color: var(--ink);
+      font: inherit; font-size: 1rem;
+    }
+    input::placeholder { color: var(--muted); }
+    .status { color: var(--muted); line-height: 1.5; }
+    #search-status { margin-top: 15px; }
+    .results { margin-top: 10px; }
+    .result {
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center; gap: 12px; padding-block: 12px; border-top: 1px solid var(--line);
+    }
+    .answer { overflow-wrap: anywhere; font-weight: 700; }
+    .points { font-weight: 800; color: var(--accent); white-space: nowrap; }
+    .round-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; }
+    .round-nav a {
+      display: inline-flex; align-items: center; min-height: 46px; padding: 8px 13px;
+      border: 1px solid var(--line); border-radius: 9px; overflow-wrap: anywhere;
+    }
+    .round-nav a:hover { border-color: var(--accent); }
+    .round-nav a:last-child { margin-left: auto; }
+    @media (max-width: 580px) {
+      .wrap { padding-inline: 16px; }
+      main { padding-top: 30px; }
+      .questions { grid-template-columns: 1fr; }
+      .question { min-height: 64px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <a class="brand" href="#" aria-label="Gæt Top 100, alle spørgsmål">
+        <span class="mark" aria-hidden="true">#</span> Gæt Top 100
+      </a>
+      <span class="role">Værtsvisning</span>
+    </div>
+  </header>
+  <main class="wrap">
+    <section id="overview" aria-labelledby="overview-heading">
+      <div class="intro">
+        <h1 id="overview-heading" tabindex="-1">Gæt Top 100</h1>
+        <p>Slå et gæt op, og giv point efter placeringen. Nr. 1 giver 1 point, og nr. 100 giver 100 point.</p>
+      </div>
+      <h2 class="overview-heading">Vælg et spørgsmål</h2>
+      <ol class="questions" id="questions"></ol>
+    </section>
+
+    <section id="question" aria-labelledby="question-heading" hidden>
+      <a class="back" href="#">← Alle spørgsmål</a>
+      <p class="question-meta" id="question-meta"></p>
+      <h1 id="question-heading" tabindex="-1"></h1>
+      <div class="search-panel">
+        <div id="search-controls">
+          <label for="search">Søg i top 100</label>
+          <input id="search" type="search" autocomplete="off" spellcheck="false"
+            enterkeyhint="search" placeholder="Skriv spillernes gæt" aria-controls="results">
+          <p class="status" id="search-status" role="status"></p>
+          <ul class="results" id="results" aria-label="Matchende svar" hidden></ul>
+        </div>
+        <p class="status" id="empty-question" hidden>Spørgsmålet og svarlisten tilføjes senere.</p>
+      </div>
+      <nav class="round-nav" aria-label="Skift spørgsmål">
+        <a id="previous">← Forrige</a>
+        <a id="next">Næste →</a>
+      </nav>
+    </section>
+  </main>
+
+  <script>
+    // Tilføj spørgsmål i rækkefølge. Brug rank 1–100 og valgfri aliases for hvert svar.
+    const questionData = [
+      {
+        title: "Nævn en ting, man ofte taber",
+        demo: true,
+        answers: [
+          { rank: 1, name: "Telefon", aliases: ["Mobil", "Mobiltelefon", "Smartphone", "iPhone"] },
+          { rank: 2, name: "Nøgler", aliases: ["Nøgle", "Nøglebundt"] },
+          { rank: 3, name: "Penge", aliases: ["Kontanter"] },
+          { rank: 7, name: "AirPods", aliases: ["Øretelefoner", "Trådløse høretelefoner"] },
+          { rank: 12, name: "Høretelefoner", aliases: ["Hovedtelefoner", "Headset"] },
+          { rank: 24, name: "Handsker", aliases: ["Handske", "Vanter"] },
+          { rank: 56, name: "Skruer", aliases: ["Skrue"] },
+          { rank: 100, name: "En terning", aliases: ["Terning"] }
+        ]
+      }
+    ];
+
+    const normalize = (value) => value.toLocaleLowerCase("da")
+      .replaceAll("æ", "ae").replaceAll("ø", "o").replaceAll("å", "a")
+      .normalize("NFD").replace(/\p{M}/gu, "")
+      .replace(/[^a-z0-9]+/g, " ").trim();
+
+    // Edit distance with adjacent transpositions for common typing errors.
+    function editDistance(left, right) {
+      const grid = Array.from({ length: left.length + 1 }, (_, index) => [index]);
+      grid[0] = Array.from({ length: right.length + 1 }, (_, index) => index);
+      for (let row = 1; row <= left.length; row++) {
+        for (let column = 1; column <= right.length; column++) {
+          grid[row][column] = Math.min(
+            grid[row - 1][column] + 1,
+            grid[row][column - 1] + 1,
+            grid[row - 1][column - 1] + Number(left[row - 1] !== right[column - 1])
+          );
+          if (row > 1 && column > 1 && left[row - 1] === right[column - 2]
+            && left[row - 2] === right[column - 1]) {
+            grid[row][column] = Math.min(grid[row][column], grid[row - 2][column - 2] + 1);
+          }
+        }
+      }
+      return grid[left.length][right.length];
+    }
+
+    function matchScore(query, term) {
+      const compactQuery = query.replaceAll(" ", "");
+      const compactTerm = term.replaceAll(" ", "");
+      if (compactQuery === compactTerm) return 0;
+      if (compactTerm.startsWith(compactQuery)) return 1;
+      if (compactQuery.length < 3) return Infinity;
+      if (compactTerm.includes(compactQuery) || compactQuery.includes(compactTerm) && compactTerm.length >= 4) {
+        return 2;
+      }
+      const limit = compactQuery.length >= 7 ? 2 : compactQuery.length >= 4 ? 1 : 0;
+      const candidates = [compactTerm, ...term.split(" ")];
+      for (const candidate of candidates) {
+        if (Math.abs(candidate.length - compactQuery.length) <= limit
+          && editDistance(compactQuery, candidate) <= limit) return 3;
+      }
+      // Preserve related compound words even when the guess contains a typo.
+      if (compactQuery.length >= 5 && compactTerm.length > compactQuery.length + 1) {
+        for (let start = 0; start <= compactTerm.length - compactQuery.length; start++) {
+          const part = compactTerm.slice(start, start + compactQuery.length);
+          if (editDistance(compactQuery, part) <= 1) return 3;
+        }
+      }
+      return Infinity;
+    }
+
+    const roundCount = 10;
+    const questions = Array.from({ length: roundCount }, (_, index) => questionData[index] ?? {
+      title: "", answers: []
+    });
+    const byId = (id) => document.getElementById(id);
+    const overview = byId("overview");
+    const questionView = byId("question");
+    const heading = byId("question-heading");
+    const input = byId("search");
+    const status = byId("search-status");
+    const results = byId("results");
+    const labels = ["Præcist match", "Delvist match", "Delvist match", "Lignende svar"];
+    let activeQuestion;
+
+    function element(tag, className, content) {
+      const node = document.createElement(tag);
+      node.className = className;
+      node.textContent = content;
+      return node;
+    }
+
+    function renderSearch() {
+      const query = normalize(input.value);
+      results.replaceChildren();
+      results.hidden = true;
+      if (!query) {
+        status.textContent = "Skriv et gæt for at se placering, point og lignende svar.";
+        return;
+      }
+      const matches = activeQuestion.answers.map((answer) => {
+        const scores = [answer.name, ...(answer.aliases ?? [])].map((term) => matchScore(query, normalize(term)));
+        return { ...answer, score: Math.min(...scores) };
+      }).filter(({ score }) => Number.isFinite(score))
+        .sort((left, right) => left.score - right.score || left.rank - right.rank);
+
+      status.textContent = matches.length === 0 ? "Ingen match i svarlisten."
+        : matches.length === 1 ? "1 match i svarlisten." : `${matches.length} match i svarlisten.`;
+      results.hidden = matches.length === 0;
+      for (const match of matches) {
+        const item = element("li", "result", "");
+        const description = element("div", "answer", match.name);
+        description.append(element("span", "match-type", labels[match.score]));
+        item.append(element("span", "rank", "#" + match.rank), description,
+          element("span", "points", match.rank + " point"));
+        results.append(item);
+      }
+    }
+
+    function renderRoute(moveFocus) {
+      const route = /^#sporgsmal-(\d+)$/.exec(location.hash);
+      const number = route ? Number(route[1]) : 0;
+      activeQuestion = questions[number - 1];
+      overview.hidden = Boolean(activeQuestion);
+      questionView.hidden = !activeQuestion;
+      if (!activeQuestion) {
+        document.title = "Gæt Top 100 · Vært";
+        if (moveFocus) byId("overview-heading").focus({ preventScroll: true });
+        return;
+      }
+
+      heading.textContent = activeQuestion.title || `Spørgsmål ${number}`;
+      document.title = `${heading.textContent} · Gæt Top 100`;
+      byId("question-meta").textContent = `Spørgsmål ${number} af ${roundCount}`
+        + (activeQuestion.demo ? " · Eksempel med testpoint" : "");
+      const hasAnswers = activeQuestion.answers.length > 0;
+      byId("search-controls").hidden = !hasAnswers;
+      byId("empty-question").hidden = hasAnswers;
+      input.value = "";
+      renderSearch();
+      byId("previous").hidden = number === 1;
+      byId("previous").href = `#sporgsmal-${number - 1}`;
+      byId("next").hidden = number === roundCount;
+      byId("next").href = `#sporgsmal-${number + 1}`;
+      if (moveFocus) heading.focus({ preventScroll: true });
+    }
+
+    questions.forEach((question, index) => {
+      const number = index + 1;
+      const link = element("a", "question", "");
+      link.href = `#sporgsmal-${number}`;
+      const description = element("span", "question-title", question.title || `Spørgsmål ${number}`);
+      if (question.demo || !question.answers.length) {
+        description.append(element("span", "question-status", question.demo ? "Eksempel" : "Afventer indhold"));
+      }
+      const arrow = element("span", "arrow", "→");
+      arrow.setAttribute("aria-hidden", "true");
+      link.append(element("span", "question-number", String(number)), description, arrow);
+      const item = document.createElement("li");
+      item.append(link);
+      byId("questions").append(item);
+    });
+
+    input.addEventListener("input", renderSearch);
+    window.addEventListener("hashchange", () => {
+      renderRoute(true);
+      window.scrollTo(0, 0);
+    });
+    renderRoute(false);
+  </script>
+</body>
+</html>
