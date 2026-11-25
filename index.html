@@ -23,13 +23,20 @@
     *, *::before, *::after { box-sizing: border-box; }
     body {
       margin: 0;
-      background: radial-gradient(ellipse at 12% 0, #274638, transparent 33rem), var(--background);
+      background:
+        radial-gradient(circle at 8px 10px, #fff4d01a 0 1px, transparent 2px) 0 0 / 52px 49px,
+        radial-gradient(circle at 29px 31px, #fff4d012 0 1px, transparent 2px) 0 0 / 67px 71px,
+        radial-gradient(ellipse at 12% 0, #274638, transparent 33rem), var(--background);
     }
     [hidden] { display: none !important; }
     a { color: inherit; text-decoration: none; }
     :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
     .wrap { max-width: 850px; margin-inline: auto; padding-inline: 24px; }
     header { border-bottom: 1px solid var(--line); background: #10241b; }
+    header::after {
+      content: ""; display: block; height: 3px;
+      background: repeating-linear-gradient(120deg, #8b3544 0 12px, #e0bd78 12px 20px, #244738 20px 38px);
+    }
     header .wrap {
       min-height: 68px; display: flex; align-items: center; justify-content: space-between;
       gap: 16px;
@@ -50,13 +57,16 @@
       position: relative; isolation: isolate; overflow: hidden;
       padding: clamp(25px, 5vw, 48px);
       border: 1px solid #a86d65; border-radius: 18px;
-      background: linear-gradient(122deg, #431e28 8%, #792c39 100%);
+      background:
+        radial-gradient(circle at 13px 8px, #ffe6b053 0 1px, transparent 2px) 0 0 / 53px 58px,
+        radial-gradient(circle at 32px 21px, #ffe6b040 0 1px, transparent 2px) 0 0 / 83px 69px,
+        linear-gradient(122deg, #431e28 8%, #792c39 100%);
     }
     .intro h1, .intro p { position: relative; z-index: 1; }
     .intro p { color: #f5dfd7; margin-top: 15px; max-width: 43ch; line-height: 1.6; }
     .tree {
-      position: absolute; z-index: 0; right: 4%; bottom: 0; width: 168px; height: 178px;
-      opacity: .76;
+      position: absolute; z-index: 0; right: 4%; bottom: -1px; width: 168px; height: 178px;
+      opacity: .94;
       background:
         radial-gradient(circle at 50% 25%, #ffe394 0 2px, transparent 3px),
         radial-gradient(circle at 39% 52%, #e4bd75 0 3px, transparent 4px),
@@ -66,6 +76,11 @@
         linear-gradient(145deg, #52745b, #18392c 80%);
       clip-path: polygon(50% 4%, 66% 41%, 59% 41%, 77% 66%, 68% 66%, 90% 94%,
         55% 94%, 55% 100%, 45% 100%, 45% 94%, 10% 94%, 32% 66%, 23% 66%, 41% 41%, 34% 41%);
+    }
+    .star {
+      position: absolute; z-index: 1; right: calc(4% + 70px); bottom: 154px;
+      color: #ffe6a0; font-size: 28px; line-height: 1;
+      text-shadow: 0 0 12px #f9cf78a8;
     }
     .overview-heading { margin-block: 36px 14px; font-size: 1.15rem; }
     .questions, .results { list-style: none; padding: 0; margin: 0; }
@@ -80,7 +95,10 @@
       width: 40px; min-height: 38px; border-radius: 8px; display: grid; place-items: center;
       background: var(--raised); color: var(--accent); font-weight: 750; font-variant-numeric: tabular-nums;
     }
-    .question[data-ready="true"] .question-number { background: var(--berry); color: var(--ink); }
+    .question[data-ready="true"] .question-number {
+      background: linear-gradient(145deg, #aa4551, #802936); color: var(--ink);
+      border: 1px solid #e0bd7870;
+    }
     .question-title { display: block; font-weight: 700; overflow-wrap: anywhere; }
     .question-status, .match-type {
       display: block; margin-top: 3px; font-size: .82rem; color: var(--muted);
@@ -95,7 +113,7 @@
     .source a { text-decoration: underline; }
     .search-panel {
       margin-top: 12px; padding: clamp(16px, 4vw, 26px); border: 1px solid var(--line);
-      border-radius: 16px; background: var(--panel);
+      border-radius: 16px; background: var(--panel); border-top: 3px solid #a85255;
     }
     .view-switch { display: flex; gap: 8px; margin-top: 24px; }
     .view-switch button {
@@ -134,7 +152,8 @@
     @media (max-width: 580px) {
       .wrap { padding-inline: 16px; }
       main { padding-top: 30px; }
-      .tree { right: -38px; opacity: .32; }
+      .tree { right: -32px; bottom: -15px; opacity: .44; }
+      .star { right: 38px; bottom: 139px; opacity: .8; }
       .questions { grid-template-columns: 1fr; }
       .question { min-height: 64px; }
     }
@@ -144,7 +163,7 @@
   <header>
     <div class="wrap">
       <a class="brand" href="#" aria-label="Gæt Top 100, alle spørgsmål">
-        <span class="mark" aria-hidden="true">✦</span> Gæt Top 100
+        <span class="mark" aria-hidden="true">❄</span> Gæt Top 100
       </a>
       <span class="role">Værtsvisning</span>
     </div>
@@ -153,6 +172,7 @@
     <section id="overview" aria-labelledby="overview-heading">
       <div class="intro">
         <div class="tree" aria-hidden="true"></div>
+        <span class="star" aria-hidden="true">✦</span>
         <h1 id="overview-heading" tabindex="-1">Julens Gæt Top 100</h1>
         <p>Slå et gæt op, og giv point efter placeringen. Nr. 1 giver 1 point, og nr. 100 giver 100 point.</p>
       </div>
@@ -978,6 +998,117 @@
           { rank: 98, name: "Østrig", count: 9113574, aliases: ["Austria"] },
           { rank: 99, name: "Belarus", count: 8997603, aliases: ["Hviderusland"] },
           { rank: 100, name: "Schweiz", count: 8967408, aliases: ["Switzerland"] }
+        ]
+      },
+      8: {
+        title: "Nævn noget, folk gør på en helt almindelig dag, rangeret efter hvor mange der gør det",
+        unit: "%",
+        source: {
+          label: "American Time Use Survey · BLS-data fra 2016 (atus)",
+          url: "https://github.com/swang87/atus",
+          note: "Top 100 bygger på 10.493 amerikanske tidsdagbøger fra 2016. Hver person tæller én gang pr. aktivitet, og undersøgelsens vægte giver den estimerede andel på en typisk dag. Uspecificerede restkategorier er udeladt. Procenterne er afrundede, og placeringerne følger de uafrundede tal."
+        },
+        answers: [
+          {"rank": 1, "name": "Sove", "count": 99.87, "aliases": ["søvn", "sover", "tage en lur", "powernap"]},
+          {"rank": 2, "name": "Spise og drikke", "count": 94.65, "aliases": ["spise", "drikke", "måltid", "frokost", "aftensmad", "morgenmad", "spiser"]},
+          {"rank": 3, "name": "Vaske sig, klæde sig på og gøre sig klar", "count": 80.92, "aliases": ["gå i bad", "bade", "tage bad", "børste tænder", "børste hår", "tage tøj på", "barbere sig", "makeup", "personlig pleje"]},
+          {"rank": 4, "name": "Se tv eller film", "count": 79.12, "aliases": ["se tv", "se fjernsyn", "se film", "se en serie", "streaming", "netflix"]},
+          {"rank": 5, "name": "Lave mad og drikkevarer", "count": 53.82, "aliases": ["lave mad", "madlavning", "koge", "stege", "bage", "lave kaffe", "brygge kaffe"]},
+          {"rank": 6, "name": "Arbejde på sit hovedjob", "count": 42.36, "aliases": ["arbejde", "job", "passe sit arbejde", "arbejde hjemme"]},
+          {"rank": 7, "name": "Tage til og fra arbejde", "count": 35.9, "aliases": ["pendle", "køre på arbejde", "transport til arbejde", "cykle på arbejde"]},
+          {"rank": 8, "name": "Tale og være sammen med andre", "count": 34.59, "aliases": ["snakke", "tale", "hygge", "socialisere", "være sammen med venner"]},
+          {"rank": 9, "name": "Tage ud at handle andet end dagligvarer", "count": 30.92, "aliases": ["transport til butikker", "køre ud at shoppe"]},
+          {"rank": 10, "name": "Tage et sted hen for at spise eller drikke", "count": 23.71, "aliases": ["køre på restaurant", "tage ud at spise", "transport til restaurant"]},
+          {"rank": 11, "name": "Gøre rent indendørs", "count": 23.37, "aliases": ["støvsuge", "gøre rent", "rengøring", "vaske gulv", "tørre støv af", "gøre toilettet rent"]},
+          {"rank": 12, "name": "Rydde op efter mad og vaske op", "count": 22.38, "aliases": ["vaske op", "opvask", "tømme opvaskemaskinen", "gøre køkkenet rent"]},
+          {"rank": 13, "name": "Shoppe andet end mad og benzin", "count": 20.65, "aliases": ["shoppe", "købe tøj", "købe sko", "købe gaver", "shopping"]},
+          {"rank": 14, "name": "Slappe af eller tænke", "count": 20.43, "aliases": ["slappe af", "hvile", "tænke", "dase"]},
+          {"rank": 15, "name": "Læse for fornøjelsens skyld", "count": 19.5, "aliases": ["læse", "læse en bog", "læse avis", "læse blad", "læsning"]},
+          {"rank": 16, "name": "Passe kæledyr", "count": 17.51, "aliases": ["lufte hunden", "hundeluftning", "gå tur med hunden", "fodre hunden", "fodre katten", "dyr"]},
+          {"rank": 17, "name": "Vaske tøj", "count": 17.05, "aliases": ["tøjvask", "vasketøj", "hænge tøj op", "folde vasketøj", "stryge tøj"]},
+          {"rank": 18, "name": "Tage hen for at være sammen med andre", "count": 16.4, "aliases": ["køre på besøg", "transport til besøg", "tage hen til venner"]},
+          {"rank": 19, "name": "Planlægge og organisere hverdagen", "count": 16.15, "aliases": ["lave indkøbsliste", "planlægge", "skrive huskeliste", "tjekke kalender"]},
+          {"rank": 20, "name": "Tage sig af børnenes praktiske behov derhjemme", "count": 14.46, "aliases": ["skifte ble", "give børn mad", "bade sit barn", "putte børnene", "give barnet tøj på"]},
+          {"rank": 21, "name": "Købe færdig mad", "count": 13.92, "aliases": ["købe mad", "købe takeaway", "bestille takeaway", "købe fastfood", "wolt", "købe frokost"]},
+          {"rank": 22, "name": "Købe dagligvarer", "count": 13.6, "aliases": ["handle ind", "købe ind", "indkøb", "købe dagligvarer", "supermarked", "handle dagligvarer"]},
+          {"rank": 23, "name": "Tage af sted for at købe dagligvarer", "count": 13.47, "aliases": ["køre i supermarkedet", "transport til supermarked"]},
+          {"rank": 24, "name": "Spille spil", "count": 11.23, "aliases": ["spille", "spille computerspil", "spille mobilspil", "gaming", "spille kort", "spille brætspil"]},
+          {"rank": 25, "name": "Bruge computer i fritiden", "count": 11.2, "aliases": ["surfe på nettet", "computer", "bruge internet", "online"]},
+          {"rank": 26, "name": "Tage af sted for at passe eller hjælpe børn i husstanden", "count": 10.48, "aliases": ["transport for at hjælpe egne børn"]},
+          {"rank": 27, "name": "Passe have, græsplæne eller planter", "count": 10.11, "aliases": ["slå græs", "havearbejde", "vande blomster", "vande planter", "luge ukrudt"]},
+          {"rank": 28, "name": "Tage af sted i forbindelse med husarbejde", "count": 9.52, "aliases": ["transport til huslige gøremål"]},
+          {"rank": 29, "name": "Tage af sted til sport eller motion", "count": 9.17, "aliases": ["tage i fitness", "køre til træning", "transport til sport"]},
+          {"rank": 30, "name": "Tage af sted til afslapning eller fritidsaktiviteter", "count": 8.51, "aliases": ["transport til fritidsaktivitet"]},
+          {"rank": 31, "name": "Hente eller bringe børn i husstanden", "count": 8.22, "aliases": ["hente børn", "aflevere børn", "hente i børnehaven", "aflevere i skole", "børnehave", "skoleaflevering"]},
+          {"rank": 32, "name": "Tage af sted for at hjælpe en voksen uden for husstanden", "count": 7.3, "aliases": ["transport for at hjælpe en anden voksen"]},
+          {"rank": 33, "name": "Gå en tur", "count": 7.12, "aliases": ["gå tur", "gåtur", "spadsere", "gå en tur", "ud at gå"]},
+          {"rank": 34, "name": "Ligge vågen, når man prøver at sove", "count": 6.43, "aliases": ["søvnløshed", "ligge vågen", "kan ikke sove"]},
+          {"rank": 35, "name": "Tage sig af eget helbred", "count": 6.25, "aliases": ["tage medicin", "tage piller", "pleje sig selv ved sygdom", "måle blodsukker"]},
+          {"rank": 36, "name": "Ringe til eller få opkald fra familie", "count": 6.14, "aliases": ["ringe til mor", "ringe til far", "ringe til familien", "tale med familie i telefon"]},
+          {"rank": 37, "name": "Lægge ting eller madvarer på plads", "count": 6.05, "aliases": ["pakke varer ud", "lægge mad på plads", "lægge ting på plads", "organisere skabe"]},
+          {"rank": 38, "name": "Lave lektier til en uddannelse", "count": 5.85, "aliases": ["lektier", "lave lektier", "studere", "læse lektier", "skrive en opgave"]},
+          {"rank": 39, "name": "Sende eller læse private mails og beskeder", "count": 5.51, "aliases": ["tjekke mail", "læse mail", "skrive beskeder", "sende sms", "læse sms"]},
+          {"rank": 40, "name": "Lege med børn i husstanden", "count": 5.35, "aliases": ["lege med børnene", "lege med sit barn", "spille med børnene"]},
+          {"rank": 41, "name": "Udføre religiøse handlinger", "count": 5.27, "aliases": ["bede", "bøn", "bede en bøn", "religiøst ritual"]},
+          {"rank": 42, "name": "Ordne privat post og beskeder på papir", "count": 5.15, "aliases": ["læse post", "skrive brev", "åbne post", "skrive kort"]},
+          {"rank": 43, "name": "Tage af sted til en religiøs aktivitet", "count": 5.14, "aliases": ["køre i kirke", "transport til kirke"]},
+          {"rank": 44, "name": "Deltage i undervisning som led i en uddannelse", "count": 4.9, "aliases": ["gå i skole", "have undervisning", "tage til time", "deltage i forelæsning"]},
+          {"rank": 45, "name": "Gå til gudstjeneste", "count": 4.81, "aliases": ["gå i kirke", "gudstjeneste", "gå i moské", "religiøs ceremoni"]},
+          {"rank": 46, "name": "Hente eller bringe en voksen uden for husstanden", "count": 4.49, "aliases": ["hente en ven", "give en ven et lift"]},
+          {"rank": 47, "name": "Træne eller motionere uden nærmere angivelse", "count": 4.39, "aliases": ["motionere", "træne", "dyrke motion", "fitness"]},
+          {"rank": 48, "name": "Ringe til eller få opkald fra venner og bekendte", "count": 4.35, "aliases": ["ringe til en ven", "telefonere", "ringe til en nabo", "tale i telefon"]},
+          {"rank": 49, "name": "Tage til og fra undervisning", "count": 4.26, "aliases": ["tage i skole", "pendle til uddannelse", "transport til skole"]},
+          {"rank": 50, "name": "Bruge sundhedstilbud uden for hjemmet", "count": 3.54, "aliases": ["gå til lægen", "lægebesøg", "tandlæge", "hospital", "sundhedsydelser"]},
+          {"rank": 51, "name": "Tanke benzin", "count": 3.54, "aliases": ["tanke", "tanke bilen", "købe benzin", "benzintank"]},
+          {"rank": 52, "name": "Tage til og fra læge eller anden behandling", "count": 3.39, "aliases": ["køre til lægen", "transport til læge", "køre til tandlægen"]},
+          {"rank": 53, "name": "Hjælpe børn i husstanden med lektier", "count": 3.27, "aliases": ["hjælpe med lektier", "lave lektier med børnene"]},
+          {"rank": 54, "name": "Tage af sted for at passe eller hjælpe andres børn", "count": 3.22, "aliases": ["transport for at hjælpe andres børn"]},
+          {"rank": 55, "name": "Ordne privatøkonomi", "count": 3.19, "aliases": ["betale regninger", "lægge budget", "tjekke netbank", "ordne økonomi"]},
+          {"rank": 56, "name": "Tage af sted i forbindelse med personlig pleje", "count": 3.15, "aliases": ["transport til personlig pleje"]},
+          {"rank": 57, "name": "Tage af sted for at lave frivilligt arbejde", "count": 2.91, "aliases": ["transport til frivilligt arbejde"]},
+          {"rank": 58, "name": "Tage af sted for at passe eller hjælpe voksne i husstanden", "count": 2.88, "aliases": ["transport for at hjælpe en voksen i hjemmet"]},
+          {"rank": 59, "name": "Læse for eller med børn i husstanden", "count": 2.7, "aliases": ["læse højt", "læse godnathistorie", "godnathistorie"]},
+          {"rank": 60, "name": "Tale med eller lytte til børn i husstanden", "count": 2.68, "aliases": ["tale med børn", "snakke med børnene"]},
+          {"rank": 61, "name": "Lytte til eller spille musik", "count": 2.66, "aliases": ["høre musik", "lytte til musik", "spille musik", "spille guitar", "spille klaver"]},
+          {"rank": 62, "name": "Holde øje med børn i husstanden", "count": 2.65, "aliases": ["passe børn", "holde opsyn med børn", "holde øje med børnene"]},
+          {"rank": 63, "name": "Anrette mad", "count": 2.52, "aliases": ["anrette", "servere mad", "anrette maden"]},
+          {"rank": 64, "name": "Hente eller bringe en voksen i husstanden", "count": 2.48, "aliases": ["hente sin partner", "give sin partner et lift"]},
+          {"rank": 65, "name": "Tage af sted til kunst og underholdning", "count": 2.32, "aliases": ["transport til biograf", "transport til koncert", "tage til koncert"]},
+          {"rank": 66, "name": "Styrketræne", "count": 2.3, "aliases": ["styrketræning", "løfte vægte", "vægtløftning"]},
+          {"rank": 67, "name": "Arbejde på et bijob", "count": 2.24, "aliases": ["bijob", "ekstrajob", "sidejob"]},
+          {"rank": 68, "name": "Vedligeholde eller reparere eget køretøj", "count": 2.22, "aliases": ["vaske bil", "reparere bil", "skifte dæk", "vedligeholde bil"]},
+          {"rank": 69, "name": "Hente eller bringe børn uden for husstanden", "count": 2.06, "aliases": ["hente andres børn", "hente børnebørn"]},
+          {"rank": 70, "name": "Tage af sted for at bruge banken", "count": 2.06, "aliases": ["køre i banken", "transport til banken"]},
+          {"rank": 71, "name": "Ordne bankforretninger", "count": 2.02, "aliases": ["hæve penge", "gå i banken", "bruge bank"]},
+          {"rank": 72, "name": "Vente på eller sammen med børn i husstanden", "count": 2.02, "aliases": ["vente på egne børn", "vente med børn"]},
+          {"rank": 73, "name": "Løbe", "count": 2.02, "aliases": ["løbetur", "jogge", "jogging", "løb"]},
+          {"rank": 74, "name": "Indrette, pynte eller reparere indendørs", "count": 1.93, "aliases": ["indrette hjemmet", "pynte huset", "reparere noget i hjemmet", "flytte møbler", "julepynt"]},
+          {"rank": 75, "name": "Holde eller deltage i fester og ceremonier", "count": 1.87, "aliases": ["holde fest", "tage til fest", "bryllup", "reception", "fest"]},
+          {"rank": 76, "name": "Give praktisk pleje til en voksen i husstanden", "count": 1.82, "aliases": ["passe en syg voksen", "pleje en voksen derhjemme"]},
+          {"rank": 77, "name": "Tage af sted til en fest eller et socialt arrangement", "count": 1.82, "aliases": ["køre til fest", "transport til fest"]},
+          {"rank": 78, "name": "Gøre rent udendørs", "count": 1.77, "aliases": ["feje terrassen", "rengøre udendørs", "feje foran huset"]},
+          {"rank": 79, "name": "Vente i forbindelse med at hjælpe en voksen uden for husstanden", "count": 1.63, "aliases": ["vente mens man hjælper en anden voksen"]},
+          {"rank": 80, "name": "Dyrke vandsport", "count": 1.62, "aliases": ["svømme", "svømning", "dyrke vandsport"]},
+          {"rank": 81, "name": "Høre radio", "count": 1.62, "aliases": ["lytte til radio", "radio"]},
+          {"rank": 82, "name": "Dyrke håndarbejde eller kreative hobbyer", "count": 1.55, "aliases": ["håndarbejde", "strikke", "hækle", "tegne", "male", "kreahobby"]},
+          {"rank": 83, "name": "Sikre hjemmet", "count": 1.55, "aliases": ["låse døren", "slå alarmen til", "tjekke låse"]},
+          {"rank": 84, "name": "Vente i forbindelse med at hjælpe en voksen i husstanden", "count": 1.48, "aliases": ["vente mens man hjælper sin partner"]},
+          {"rank": 85, "name": "Sætte apparater, værktøj eller legetøj op eller reparere dem", "count": 1.44, "aliases": ["reparere legetøj", "reparere værktøj", "reparere apparater"]},
+          {"rank": 86, "name": "Vente på læge eller behandling", "count": 1.44, "aliases": ["sidde i venteværelset", "vente hos lægen"]},
+          {"rank": 87, "name": "Bruge tobak eller stoffer", "count": 1.35, "aliases": ["ryge", "ryge cigaretter", "rygning", "ryge hash"]},
+          {"rank": 88, "name": "Bruge en frisør eller anden personlig pleje", "count": 1.31, "aliases": ["gå til frisøren", "blive klippet", "frisør", "manicure"]},
+          {"rank": 89, "name": "Vente på mad eller drikke", "count": 1.26, "aliases": ["vente på maden", "vente på restaurant", "vente på takeaway"]},
+          {"rank": 90, "name": "Sy eller reparere tekstiler", "count": 1.25, "aliases": ["sy", "lappe tøj", "sy en knap i", "reparere tøj"]},
+          {"rank": 91, "name": "Tage af sted til frisør eller anden personlig pleje", "count": 1.24, "aliases": ["køre til frisøren", "transport til frisør"]},
+          {"rank": 92, "name": "Deltage i børnenes arrangementer", "count": 1.13, "aliases": ["se sit barn spille fodbold", "skolefest", "se børnenes optræden"]},
+          {"rank": 93, "name": "Planlægge for børn i husstanden", "count": 1.12, "aliases": ["organisere børnenes aktiviteter", "planlægge for børnene"]},
+          {"rank": 94, "name": "Træne på konditionsudstyr", "count": 1.12, "aliases": ["løbebånd", "motionscykel", "konditionstræning", "crosstrainer"]},
+          {"rank": 95, "name": "Tage af sted for at få ordnet et køretøj", "count": 1.09, "aliases": ["køre til mekaniker", "køre på værksted"]},
+          {"rank": 96, "name": "Lege med børn uden for husstanden", "count": 1.04, "aliases": ["lege med andres børn", "lege med børnebørn"]},
+          {"rank": 97, "name": "Tage sig af andres børns praktiske behov", "count": 1.03, "aliases": ["passe andres børn", "skifte ble på andres barn"]},
+          {"rank": 98, "name": "Søge job", "count": 1.02, "aliases": ["jobsøgning", "skrive jobansøgning", "søge arbejde", "lede efter job"]},
+          {"rank": 99, "name": "Deltage i religionsundervisning", "count": 1.01, "aliases": ["søndagsskole", "konfirmationsforberedelse", "religionsundervisning"]},
+          {"rank": 100, "name": "Tage af sted til andre uddannelsesaktiviteter", "count": 1.0, "aliases": ["transport til skolearrangement"]},
         ]
       },
       9: {
